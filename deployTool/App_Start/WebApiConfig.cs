@@ -20,8 +20,9 @@ namespace deployTool
 
             config.Routes.MapHttpRoute(
                 name: "DefaultApi",
-                routeTemplate: "git/{controller}/{id}",
+                routeTemplate: "{controller}/{id}",
                 defaults: new { id = RouteParameter.Optional });
+            
         }
     }
 }

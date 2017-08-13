@@ -18,14 +18,32 @@ namespace deployTool.Controllers
         // GET: api/fetch
         public string Get()
         {
-
             return "RepositoryName";
         }
 
         // GET: api/fetch/5
-        public string Get(string RepositoryName)
+        public string Get(string id)
         {
+            return command(id);
+        }
 
+        // POST: api/fetch
+        public void Post(string id,[FromBody]string value)
+        {
+            command(id);
+        }
+
+        // PUT: api/fetch/5
+        //public void Put(int id, [FromBody]string value)
+        //{
+        //}
+
+        // DELETE: api/fetch/5
+        //public void Delete(int id)
+        //{
+        //}
+
+        public string command(string RepositoryName) {
             var configItem = WebApi.configuration.Where(x => x.repositoryName.Equals(RepositoryName, StringComparison.OrdinalIgnoreCase)).FirstOrDefault();
 
             if (configItem == null)
@@ -34,6 +52,8 @@ namespace deployTool.Controllers
             WebApi.log.AddItem(RepositoryName, "Fetch Start");
 
             string logMessage = "";
+            
+
             using (var repo = new Repository(configItem.repositoryPath))
             {
                 FetchOptions options = new FetchOptions();
@@ -47,7 +67,7 @@ namespace deployTool.Controllers
                           Password = configItem.password
                       });
                 }
-
+               
 
                 foreach (Remote remote in repo.Network.Remotes)
                 {
@@ -58,22 +78,7 @@ namespace deployTool.Controllers
             WebApi.log.AddItem(RepositoryName, "Fetch End");
 
             return logMessage;
-
         }
 
-        // POST: api/fetch
-        //public void Post([FromBody]string value)
-        //{
-        //}
-
-        // PUT: api/fetch/5
-        //public void Put(int id, [FromBody]string value)
-        //{
-        //}
-
-        // DELETE: api/fetch/5
-        //public void Delete(int id)
-        //{
-        //}
     }
 }
