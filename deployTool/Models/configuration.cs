@@ -15,34 +15,7 @@ namespace deployTool.Models
         public string logMessage { get; set; }  //last Message
     }
 
-    public class Log {
-        List<Models.LogItem> log { get; set; }
-
-        public void AddItem(string repositoryName, string message)
-        {
-            if (log == null)
-                log = new List<LogItem>();
-
-            log.Add(new LogItem(repositoryName, message));
-
-        }
-
-    }
-    
-
-    public class LogItem
-    {
-        public DateTime logDate { get; set; }
-        public string repositoryName { get; set; }
-        public string message { get; set; }
-
-        public LogItem(string _repositoryName,string _message)
-        {
-            logDate = DateTime.UtcNow;
-            repositoryName = _repositoryName;
-            message = _message;
-        }
-    }
+  
 
 
 }

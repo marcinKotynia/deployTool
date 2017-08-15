@@ -14,13 +14,14 @@ namespace deployTool.Controllers
         // GET: api/fetch
         public string Get()
         {
-            return "Command";
+            return "OK";
         }
 
         // GET: api/fetch/5
         public string Get(string id)
         {
-            return command(id);
+             command(id);
+            return "OK";
         }
 
         // POST: api/fetch
@@ -39,44 +40,44 @@ namespace deployTool.Controllers
         //{
         //}
 
-        public string command(string commanditem)
+        public void command(string commanditem)
         {
             var configItem = WebApi.configuration.Where(x => x.repositoryName.Equals(commanditem, StringComparison.OrdinalIgnoreCase)).FirstOrDefault();
 
             if (configItem == null)
-                throw new Exception(string.Format("Command {0} not found", commanditem));
-
-            WebApi.log.AddItem(commanditem, "Command Start");
-
-            string logMessage = "";
-
-            string command = "";
-            var processInfo = new ProcessStartInfo("cmd.exe", "/c " + command);
+                deployTool.WebApi.logger.Error(string.Format("Command {0} not found", commanditem));
+            
+            deployTool.WebApi.logger.Debug("Command Start " + commanditem);
+            
+       
+            var processInfo = new ProcessStartInfo("cmd.exe", "/c " + configItem.repositoryPath);
             processInfo.CreateNoWindow = true;
             processInfo.UseShellExecute = false;
             processInfo.RedirectStandardError = true;
             processInfo.RedirectStandardOutput = true;
 
             var process = Process.Start(processInfo);
+            //* Read the output (or the error)
+            //string output = process.StandardOutput.ReadToEnd();
+            //deployTool.WebApi.logger.Debug(output);
+            //string err = process.StandardError.ReadToEnd();
+            //deployTool.WebApi.logger.Error(err);
 
             process.OutputDataReceived += (object sender, DataReceivedEventArgs e) =>
-                Console.WriteLine("output>>" + e.Data);
+                   deployTool.WebApi.logger.Debug(e.Data);
             process.BeginOutputReadLine();
 
             process.ErrorDataReceived += (object sender, DataReceivedEventArgs e) =>
-                Console.WriteLine("error>>" + e.Data);
+                deployTool.WebApi.logger.Error(e.Data);
             process.BeginErrorReadLine();
 
             process.WaitForExit();
-
-            Console.WriteLine("ExitCode: {0}", process.ExitCode);
+            
             process.Close();
 
 
-
-            WebApi.log.AddItem(commanditem, "Command End");
-
-            return logMessage;
+            deployTool.WebApi.logger.Debug("Command End "+ commanditem);
+            
         }
 
     }

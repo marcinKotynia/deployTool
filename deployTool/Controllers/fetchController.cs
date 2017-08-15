@@ -49,7 +49,7 @@ namespace deployTool.Controllers
             if (configItem == null)
                 throw new Exception(string.Format("Repository {0} not found", RepositoryName));
 
-            WebApi.log.AddItem(RepositoryName, "Fetch Start");
+            deployTool.WebApi.logger.Debug("Command Start");
 
             string logMessage = "";
             
@@ -75,7 +75,7 @@ namespace deployTool.Controllers
                     Commands.Fetch(repo, remote.Name, refSpecs, options, logMessage);
                 }
             }
-            WebApi.log.AddItem(RepositoryName, "Fetch End");
+            deployTool.WebApi.logger.Debug("Command end");
 
             return logMessage;
         }
