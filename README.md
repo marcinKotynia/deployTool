@@ -1,11 +1,20 @@
-# DeployTool. How To setup simple CI using Github weebhooks and  deploymentKey on Windows Machine with IIS
+# DeployTool
+
+Dead simple solution for Continuous Integration Environment on Windows Machine.
+How it works.
+
+- Install Deploy Tool on yor server.
+- When you  commit ( publish release ... )
+- DeployTool Will trigger command from your configuration
 
 
 ## Prerequisites
 
 - Windows Machine  (Windows Server , Windows 10)
 - GIT https://git-scm.com/
-- Github Account
+- Github Account (applies also to Bitbucket, Gitlab others that supports WeebHook)
+
+# DeployTool - How To setup simple CI using Github weebhooks and  deploymentKey on Windows Machine with IIS
 
 ## Step 1 Create ssh certificate - server
 
@@ -52,18 +61,38 @@ Add url when DeployTool is installed
 
 ## Step 9  Windows Machine - DeployTool Confguration
 
-Find Config.yaml and replace with your project loacation
+Find Config.yaml and replace with your project location
 
 ~~~
 - repositoryName: platforma
-  repositoryPath: C:\git\csvtosql
-  username: 
-  password: 
+  repositoryPath: C:\data\deploy\instance\platforma.bat
 ~~~
 
-## Step 10 Windows Machine - Rights
+Create batch file C:\data\deploy\instance\platforma.bat
+For simple pull just paste below (change your path and names to valid ones)
 
-Assign rights for ApplicationPool to folder where your repository is
+Command is available under
 
-Right click on folder > Goto Security > Edit > add
-Add full rights for IIS AppPool\DefaultAppPool  (replace DEfaultAppPool with your app pool name) 
+- yourdomain.com\command\platforma 
+- yourdomain.com\command\[your repositoryname]
+
+~~~
+set PATH=%PATH%;C:\Program Files\Git\bin;
+cd C:\data\platforma-deploy
+git pull
+~~~
+
+
+## Step 10 Windows Machine - Assign rights for ApplicationPool to folder where your repository is
+
+If you application pool is named "DefaultAppPool" (just replace this text below if it is named differently)
+
+Open Windows Explorer
+Select a file or directory.
+Right click the file and select "Properties"
+Select the "Security" tab
+Click the "Edit" and then "Add" button
+Click the "Locations" button and make sure you select the local machine. (Not the Windows domain if the server belongs to one.)
+Enter "IIS AppPool\DefaultAppPool" in the "Enter the object names to select:" text box. (Don't forget to change "DefaultAppPool" here to whatever you named your application pool.)
+Click the "Check Names" button and click "OK".
+
